@@ -98,6 +98,33 @@ st.markdown("""
     letter-spacing: .12em;
 }
 .cyber-heading h1 {margin: 4px 0 0; padding: 0; font-size: clamp(1.65rem, 4vw, 2.4rem);}
+
+[data-testid="stMainBlockContainer"] {max-width: 1320px; padding-top: 3.5rem;}
+.stApp {background: #101815;}
+.cyber-heading {
+    background: linear-gradient(115deg,#263b30,#17251e 65%);
+    border: 1px solid #41584a;
+    padding: clamp(20px,4vw,46px);
+    border-radius: 18px;
+}
+.cyber-heading p {color:#bdcfc3; margin:12px 0 0;}
+.cyber-heading .chips {display:flex; gap:8px; flex-wrap:wrap; margin-top:20px;}
+.cyber-heading .chips span {
+    background:#17261e; border:1px solid #506657; color:#d8e8d9;
+    padding:4px 10px; border-radius:999px; font-size:.8rem;
+}
+[data-baseweb="tab-list"] {gap:.6rem; margin-bottom:1rem;}
+[data-baseweb="tab"] {padding:.5rem .85rem; border-radius:8px 8px 0 0;}
+[data-baseweb="tab"][aria-selected="true"] {background:#26382d;}
+[data-testid="stMetric"] {background:#1b2a22; border-top:2px solid #79966e;}
+[data-testid="stFileUploaderDropzone"] {
+    background:#e8efe8; border:1px dashed #718d77; border-radius:12px;
+}
+[data-testid="stFileUploaderDropzone"] small,
+[data-testid="stFileUploaderDropzone"] span {color:#23372b;}
+[data-testid="stDataFrame"] {border:1px solid #40554a; border-radius:10px; overflow:hidden;}
+[data-testid="stExpander"] summary {padding:12px 16px;}
+[data-testid="stAlert"] {border-radius:10px;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -165,22 +192,31 @@ def main_streamlit_app():
         st.image("https://aulavirtual.eie.edu.pe/pluginfile.php/1/core_admin/logo/0x200/1790129921/logoeie%20%281%29.png", use_container_width=True)
         st.markdown("<h2 style='text-align: center; margin-top: 10px;'>Control Militar AI</h2>", unsafe_allow_html=True)
         st.markdown("<hr style='border-color: #4d682e;'>", unsafe_allow_html=True)
-        st.subheader("Estado Operacional")
+        st.subheader("Panel del modelo")
         st.metric(label="Precisión de detección", value="99.54%")
         st.metric(label="Unidad supervisora", value="Ciberdefensa")
         st.markdown("<hr style='border-color: #4d682e;'>", unsafe_allow_html=True)
         st.caption("🎖️ Desplegado bajo los estándares de la Escuela de Inteligencia del Ejército.")
 
     # --- CUERPO PRINCIPAL ---
-    st.markdown("<div class='cyber-heading'><small>OPERACIONES DE CIBERDEFENSA</small><h1>Sistema analítico de ciberinteligencia</h1></div>", unsafe_allow_html=True)
-    st.caption("Monitoreo cibernético y clasificación táctica de vectores de intrusión mediante Redes de Árboles Estructurados (XGBoost).")
-    st.markdown("---")
+    st.markdown(
+        """
+        <section class="cyber-heading">
+            <small>CONTROL MILITAR AI · CIBERDEFENSA</small>
+            <h1>Consola de ciberinteligencia</h1>
+            <p>Clasificación de flujos de red y análisis de posibles intrusiones.</p>
+            <div class="chips"><span>XGBoost</span><span>21 variables</span><span>10 clases</span></div>
+        </section>
+        """,
+        unsafe_allow_html=True,
+    )
 
     tab1, tab2 = st.tabs(["01 · Análisis individual", "02 · Análisis por lotes"])
 
     # --- PESTAÑA 1: SISTEMA MANUAL ---
     with tab1:
-        st.subheader("Auditoría de Vector Individual")
+        st.subheader("Configurar flujo de red")
+        st.caption("Completa los datos del flujo y selecciona Clasificar flujo para ver el resultado.")
         
         with st.expander("01 · Direccionamiento y protocolo", expanded=True):
             col1, col2 = st.columns(2)
@@ -250,14 +286,14 @@ def main_streamlit_app():
             result_label = class_mapping_es[pred_idx]
 
             st.markdown("---")
-            st.subheader("🔥 Resultado del Diagnóstico de Ciberinteligencia:")
+            st.subheader("Resultado de la clasificación")
 
             if pred_idx == 0:
                 st.success(f"### ✅ {result_label} \n\n El tráfico se comporta de forma legítima bajo parámetros normales.")
             else:
                 st.error(f"### 📡 ALERTA CRÍTICA: DETECTADO -> {result_label.upper()} \n\n Se recomienda contención inmediata del vector de red.")
 
-            st.subheader("📊 Matriz de Probabilidades del Flujo Examinado:")
+            st.subheader("Puntajes por clase")
             prob_df = pd.DataFrame({
             'Clase de Tráfico / Amenaza': [class_mapping_es[i] for i in range(10)],
             'Probabilidad Calculada': [f"{p * 100:.4f}%" for p in proba]
@@ -266,13 +302,14 @@ def main_streamlit_app():
 
     # --- PESTAÑA 2: SISTEMA MASIVO ---
     with tab2:
-        st.header("Procesamiento por Archivos de Auditoría")
-        uploaded_file = st.file_uploader("Cargar archivo de logs de red (.CSV)", type=["csv"])
+        st.header("Importar flujos de red")
+        st.caption("Carga un CSV para revisar la distribución de clases y descargar el reporte del lote.")
+        uploaded_file = st.file_uploader("Seleccionar archivo CSV", type=["csv"])
 
         if uploaded_file is not None:
             try:
                 df_original = pd.read_csv(uploaded_file)
-                st.success("📂 Datos del lote cargados de forma exitosa:")
+                st.success("Archivo cargado · Vista previa")
                 st.dataframe(df_original.head(5), use_container_width=True)
 
                 missing_cols = [c for c in req_cols if c not in df_original.columns]
@@ -300,7 +337,7 @@ def main_streamlit_app():
                             batch_preds = xgb_model.predict(scaled_batch)
                             df_original['DIAGNÓSTICO_IA'] = [class_mapping_es[int(p)] for p in batch_preds]
 
-                            st.success("🎉 ¡Procesamiento masivo y cálculos completados!")
+                            st.success("Análisis del lote completado")
 
                             conteo_amenazas = df_original['DIAGNÓSTICO_IA'].value_counts()
                             total_registros = len(df_original)
@@ -310,9 +347,9 @@ def main_streamlit_app():
 
                             st.subheader("Resumen del lote")
                             col_m1, col_m2, col_m3 = st.columns(3)
-                            col_m1.metric("Total Conexiones Auditadas", f"{total_registros} flujos")
-                            col_m2.metric("Amenazas Detectadas", f"{amenazas_totales} anomalías", delta=f"{tasa_criticidad:.2f}% Tasa", delta_color="inverse")
-                            col_m3.metric("Nivel de Alerta General", "CRÍTICO" if tasa_criticidad > 10 else "MODERADO" if tasa_criticidad > 2 else "SEGURO")
+                            col_m1.metric("Flujos analizados", f"{total_registros} flujos")
+                            col_m2.metric("Posibles intrusiones", f"{amenazas_totales} anomalías", delta=f"{tasa_criticidad:.2f}% Tasa", delta_color="inverse")
+                            col_m3.metric("Nivel de alerta", "CRÍTICO" if tasa_criticidad > 10 else "MODERADO" if tasa_criticidad > 2 else "SEGURO")
 
                             col_g1, col_g2 = st.columns(2)
                             with col_g1:
