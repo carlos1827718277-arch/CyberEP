@@ -11,13 +11,6 @@ from sklearn.preprocessing import StandardScaler
 # ==============================================================================
 # 🎛️ CONFIGURACIÓN INICIAL / MAPEO DE VARIABLES TRADUCIDAS
 # ==============================================================================
-st.set_page_config(
-    page_title="Consola de Inteligencia y Ciberseguridad - EIE",
-    page_icon="🛡️",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
-
 class_mapping_es = {
     0: "Tráfico Normal",
     1: "Puerta Trasera (Backdoor)",
@@ -40,52 +33,63 @@ req_cols = [
 
 
 # ==============================================================================
-# 🎨 PERSONALIZACIÓN COSMÉTICA Y FONDO DE PANTALLA (EIE)
+# 🎨 INYECCIÓN DE ESTILOS CSS AVANZADOS Y CONTROL DE BRILLO
 # ==============================================================================
-background_url = (
-    "https://eie.edu.pe/wp-content/themes/eie/template/html/images/"
-    "banner-nosotros.webp"
-)
+background_url = "https://eie.edu.pe"
 
-st.markdown(
-    f"""
+st.markdown(f"""
     <style>
+    /* Control de brillo del fondo principal */
     .stApp {{
-        background: linear-gradient(rgba(18, 24, 15, 0.85), rgba(18, 24, 15, 0.85)), url("{background_url}");
+        background: linear-gradient(rgba(20, 28, 15, 0.65), rgba(20, 28, 15, 0.65)), url("{background_url}");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
     }}
-    h1, h2, h3, p, label, .stMarkdown {{
+
+    /* Fondo verde militar sólido y texto claro en la barra lateral */
+    [data-testid="stSidebar"] {{
+        background-color: #1e2b14 !important;
+        background-image: none !important;
+    }}
+    [data-testid="stSidebar"] *, [data-testid="stSidebar"] p, [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] span {{
         color: #f1f4f0 !important;
     }}
+
+    /* Configuración de tipografías globales */
+    h1, h2, h3, p, label, .stMarkdown, [data-testid="stMetricValue"] {{
+        color: #f1f4f0 !important;
+    }}
+
+    /* Botones de acción estilizados */
     .stButton>button {{
-        background-color: #3d5a28 !important;
+        background-color: #384e20 !important;
         color: white !important;
         border-radius: 6px;
-        border: 1px solid #557a3a;
+        border: 1px solid #4d682e;
         font-weight: bold;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
     }}
     .stButton>button:hover {{
-        background-color: #4d7335 !important;
-        border: 1px solid #73a352;
+        background-color: #4a6b2b !important;
+        border: 1px solid #66943f;
     }}
+
+    /* Pestañas de navegación */
     div[data-baseweb="tab-list"] {{
-        background-color: rgba(25, 35, 22, 0.7);
+        background-color: rgba(30, 43, 20, 0.85);
         border-radius: 8px;
         padding: 5px;
     }}
     button[data-baseweb="tab"] {{
-        color: #c2cbc0 !important;
+        color: #cad2c5 !important;
     }}
     button[aria-selected="true"] {{
-        color: #59ab32 !important;
+        color: #79d243 !important;
         font-weight: bold !important;
     }}
     </style>
-    """,
-    unsafe_allow_html=True,
-)
+""", unsafe_allow_html=True)
 
 
 # ==============================================================================
@@ -175,16 +179,25 @@ def main_streamlit_app():
         )
         st.stop()
 
-    # --- BARRA LATERAL ---
+    # --- BARRA LATERAL (SIDEBAR) - DISEÑO MILITAR CORREGIDO ---
     with st.sidebar:
-        st.title("Control Militar AI")
-        st.markdown("---")
+        # Escudo oficial de la Escuela de Inteligencia del Ejército solicitado
+        st.image(
+            "https://aulavirtual.eie.edu.pe/pluginfile.php/1/core_admin/logo/"
+            "0x200/1790129921/logoeie%20%281%29.png",
+            use_container_width=True,
+        )
+        st.markdown(
+            "<h2 style='text-align: center; margin-top: 10px;'>Control Militar AI</h2>",
+            unsafe_allow_html=True,
+        )
+        st.markdown("<hr style='border-color: #4d682e;'>", unsafe_allow_html=True)
         st.subheader("Estado Operacional")
-        st.metric(label="Precisión de Detección", value="99.54%")
-        st.metric(label="Unidad Supervisora", value="Ciberdefensa")
-        st.markdown("---")
+        st.metric(label="⚽ Precisión de Detección", value="99.54%")
+        st.metric(label="🏢 Unidad Supervisora", value="Ciberdefensa")
+        st.markdown("<hr style='border-color: #4d682e;'>", unsafe_allow_html=True)
         st.caption(
-            "Desplegado bajo los estándares de la Escuela de Inteligencia del Ejército."
+            "🎖️ Desplegado bajo los estándares de la Escuela de Inteligencia del Ejército."
         )
 
     # --- CUERPO PRINCIPAL ---
@@ -196,10 +209,10 @@ def main_streamlit_app():
     st.markdown("---")
 
     tab1, tab2 = st.tabs(
-        ["📝 Análisis Manual Operativo", "📁 Análisis Masivo por Lotes"]
+        ["⚡ Análisis Manual Operativo", "📊 Análisis Masivo por Lotes"]
     )
 
-    # --- PESTAÑA 1: SISTEMA MANUAL CON ESTADÍSTICAS ---
+    # --- PESTAÑA 1: SISTEMA MANUAL ---
     with tab1:
         st.subheader("Auditoría de Vector Individual")
 
@@ -224,7 +237,7 @@ def main_streamlit_app():
                     ],
                 )
 
-        with st.expander("📊 2. Análisis Volumétrico de Tráfico", expanded=True):
+        with st.expander("📈 2. Análisis Volumétrico de Tráfico", expanded=True):
             col1, col2 = st.columns(2)
             with col1:
                 duration = st.number_input(
@@ -238,7 +251,7 @@ def main_streamlit_app():
                 dst_bytes = st.number_input("Bytes de Destino", min_value=0, value=2592)
                 dst_pkts = st.number_input("Paquetes de Destino", min_value=0, value=31)
 
-        with st.expander("🔒 3. Capa de Aplicación y Firmas", expanded=False):
+        with st.expander("⚙️ 3. Capa de Aplicación y Firmas", expanded=False):
             col1, col2 = st.columns(2)
             with col1:
                 service = st.selectbox(
@@ -257,9 +270,9 @@ def main_streamlit_app():
                 http_status_code = st.number_input(
                     "Código de Respuesta HTTP", min_value=0, value=0
                 )
-                weird_name = st.text_input(" weird_name Campo Log", "-")
+                weird_name = st.text_input("weird_name Campo Log", "-")
 
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("\n", unsafe_allow_html=True)
 
         if st.button("🚨 CORRER DIAGNÓSTICO EN TIEMPO REAL", use_container_width=True):
             input_data = pd.DataFrame([{
@@ -290,16 +303,20 @@ def main_streamlit_app():
                 {"tcp": 0, "udp": 1, "icmp": 2}
             ).fillna(0)
             input_data["service"] = input_data["service"].map(
-                {"-": 0, "dns": 1, "http": 2, "ftp": 3, "ssl": 4,
-                 "gssapi": 5, "dce_rpc": 6, "smb": 7}
+                {
+                    "-": 0, "dns": 1, "http": 2, "ftp": 3, "ssl": 4,
+                    "gssapi": 5, "dce_rpc": 6, "smb": 7,
+                }
             ).fillna(0)
             input_data["http_method"] = input_data["http_method"].map(
                 {"-": 0, "GET": 1, "POST": 2, "HEAD": 3}
             ).fillna(0)
             input_data["conn_state"] = input_data["conn_state"].map(
-                {"S0": 0, "SF": 1, "REJ": 2, "OTH": 3, "SH": 4,
-                 "S1": 5, "S3": 6, "SHR": 7, "RSTR": 8, "RSTRH": 9,
-                 "RSTO": 10, "S2": 11, "RSTOS0": 12}
+                {
+                    "S0": 0, "SF": 1, "REJ": 2, "OTH": 3, "SH": 4,
+                    "S1": 5, "S3": 6, "SHR": 7, "RSTR": 8, "RSTRH": 9,
+                    "RSTO": 10, "S2": 11, "RSTOS0": 12,
+                }
             ).fillna(0)
 
             input_data["src_ip"] = (
@@ -325,11 +342,11 @@ def main_streamlit_app():
             prediction = xgb_model.predict(input_data_scaled)
             proba = xgb_model.predict_proba(input_data_scaled)[0]
 
-            pred_idx = int(np.asarray(prediction).flatten()[0])
+            pred_idx = int(np.asarray(prediction).ravel()[0])
             result_label = class_mapping_es[pred_idx]
 
             st.markdown("---")
-            st.subheader("📊 Resultado del Diagnóstico de Ciberinteligencia:")
+            st.subheader("🔥 Resultado del Diagnóstico de Ciberinteligencia:")
 
             if pred_idx == 0:
                 st.success(
@@ -338,11 +355,11 @@ def main_streamlit_app():
                 )
             else:
                 st.error(
-                    f"### 🔥 ALERTA CRÍTICA: DETECTADO -> {result_label.upper()}\n\n"
+                    f"### 📡 ALERTA CRÍTICA: DETECTADO -> {result_label.upper()}\n\n"
                     "Se recomienda contención inmediata del vector de red."
                 )
 
-            st.subheader("📈 Matriz de Probabilidades del Flujo Examinado:")
+            st.subheader("📊 Matriz de Probabilidades del Flujo Examinado:")
             prob_df = pd.DataFrame({
                 "Clase de Tráfico / Amenaza": [class_mapping_es[i] for i in range(10)],
                 "Probabilidad Calculada": [f"{p * 100:.4f}%" for p in proba],
@@ -365,92 +382,101 @@ def main_streamlit_app():
                 missing_cols = [c for c in req_cols if c not in df_original.columns]
                 if missing_cols:
                     st.error(f"⚠️ Estructura no válida. Columnas faltantes: {missing_cols}")
-                elif st.button(
-                    "🚨 INICIAR PROCESAMIENTO ESTADÍSTICO MASIVO",
-                    use_container_width=True,
-                ):
-                    with st.spinner("Procesando vectores correlacionales..."):
-                        df_proc = df_original[req_cols].copy()
+                else:
+                    if st.button(
+                        "🚨 INICIAR PROCESAMIENTO ESTADÍSTICO MASIVO",
+                        use_container_width=True,
+                    ):
+                        with st.spinner("Procesando vectores correlacionales..."):
+                            df_proc = df_original[req_cols].copy()
 
-                        df_proc["proto"] = df_proc["proto"].map(
-                            {"tcp": 0, "udp": 1, "icmp": 2}
-                        ).fillna(0)
-                        df_proc["service"] = df_proc["service"].map(
-                            {"-": 0, "dns": 1, "http": 2, "ftp": 3, "ssl": 4,
-                             "gssapi": 5, "dce_rpc": 6, "smb": 7}
-                        ).fillna(0)
-                        df_proc["http_method"] = df_proc["http_method"].map(
-                            {"-": 0, "GET": 1, "POST": 2, "HEAD": 3}
-                        ).fillna(0)
-                        df_proc["conn_state"] = df_proc["conn_state"].map(
-                            {"S0": 0, "SF": 1, "REJ": 2, "OTH": 3, "SH": 4,
-                             "S1": 5, "S3": 6, "SHR": 7, "RSTR": 8, "RSTRH": 9,
-                             "RSTO": 10, "S2": 11, "RSTOS0": 12}
-                        ).fillna(0)
+                            df_proc["proto"] = df_proc["proto"].map(
+                                {"tcp": 0, "udp": 1, "icmp": 2}
+                            ).fillna(0)
+                            df_proc["service"] = df_proc["service"].map(
+                                {
+                                    "-": 0, "dns": 1, "http": 2, "ftp": 3, "ssl": 4,
+                                    "gssapi": 5, "dce_rpc": 6, "smb": 7,
+                                }
+                            ).fillna(0)
+                            df_proc["http_method"] = df_proc["http_method"].map(
+                                {"-": 0, "GET": 1, "POST": 2, "HEAD": 3}
+                            ).fillna(0)
+                            df_proc["conn_state"] = df_proc["conn_state"].map(
+                                {
+                                    "S0": 0, "SF": 1, "REJ": 2, "OTH": 3, "SH": 4,
+                                    "S1": 5, "S3": 6, "SHR": 7, "RSTR": 8, "RSTRH": 9,
+                                    "RSTO": 10, "S2": 11, "RSTOS0": 12,
+                                }
+                            ).fillna(0)
 
-                        for col in [
-                            "dns_query", "ssl_version", "ssl_cipher", "http_uri", "weird_name"
-                        ]:
-                            df_proc[col] = (
-                                df_proc[col].astype(str).map(encoder_weights[col]).fillna(3.46)
+                            for col in [
+                                "dns_query", "ssl_version", "ssl_cipher",
+                                "http_uri", "weird_name",
+                            ]:
+                                df_proc[col] = (
+                                    df_proc[col].astype(str)
+                                    .map(encoder_weights[col])
+                                    .fillna(3.46)
+                                )
+
+                            df_proc["src_ip"] = df_proc["src_ip"].astype(str).map(
+                                lambda x: encoder_weights["src_ip_le"].index(x)
+                                if x in encoder_weights["src_ip_le"] else 20.0
+                            )
+                            df_proc["dst_ip"] = df_proc["dst_ip"].astype(str).map(
+                                lambda x: encoder_weights["dst_ip_le"].index(x)
+                                if x in encoder_weights["dst_ip_le"] else 194.0
                             )
 
-                        df_proc["src_ip"] = df_proc["src_ip"].astype(str).map(
-                            lambda x: encoder_weights["src_ip_le"].index(x)
-                            if x in encoder_weights["src_ip_le"] else 20.0
+                            df_proc = df_proc.astype(float)
+                            scaled_batch = pk_scaler.transform(df_proc)
+                            batch_preds = xgb_model.predict(scaled_batch)
+
+                            df_original["DIAGNÓSTICO_IA"] = [
+                                class_mapping_es[int(p)] for p in batch_preds
+                            ]
+
+                        st.success("🎉 ¡Procesamiento masivo y cálculos completados!")
+
+                        conteo_amenazas = df_original["DIAGNÓSTICO_IA"].value_counts()
+                        total_registros = len(df_original)
+                        trafico_normal = conteo_amenazas.get("Tráfico Normal", 0)
+                        amenazas_totales = total_registros - trafico_normal
+                        tasa_criticidad = (amenazas_totales / total_registros) * 100
+
+                        st.subheader("📈 Métricas de Control de Daños del Lote:")
+                        col_m1, col_m2, col_m3 = st.columns(3)
+                        col_m1.metric("Total Conexiones Auditadas", f"{total_registros} flujos")
+                        col_m2.metric(
+                            "Amenazas Detectadas",
+                            f"{amenazas_totales} anomalías",
+                            delta=f"{tasa_criticidad:.2f}% Tasa",
+                            delta_color="inverse",
                         )
-                        df_proc["dst_ip"] = df_proc["dst_ip"].astype(str).map(
-                            lambda x: encoder_weights["dst_ip_le"].index(x)
-                            if x in encoder_weights["dst_ip_le"] else 194.0
+                        col_m3.metric(
+                            "Nivel de Alerta General",
+                            "CRÍTICO" if tasa_criticidad > 10
+                            else "MODERADO" if tasa_criticidad > 2
+                            else "SEGURO",
                         )
 
-                        df_proc = df_proc.astype(float)
-                        scaled_batch = pk_scaler.transform(df_proc)
-                        batch_preds = xgb_model.predict(scaled_batch)
+                        col_g1, col_g2 = st.columns(2)
+                        with col_g1:
+                            st.subheader("📋 Tabla Estadística Resumida:")
+                            st.dataframe(conteo_amenazas, use_container_width=True)
+                        with col_g2:
+                            st.subheader("📊 Gráfico de Distribución del Tráfico:")
+                            st.bar_chart(conteo_amenazas)
 
-                    df_original["DIAGNÓSTICO_IA"] = [
-                        class_mapping_es[int(p)] for p in batch_preds
-                    ]
-                    st.success("🎉 ¡Procesamiento masivo y cálculos completados!")
-
-                    conteo_amenazas = df_original["DIAGNÓSTICO_IA"].value_counts()
-                    total_registros = len(df_original)
-                    trafico_normal = conteo_amenazas.get("Tráfico Normal", 0)
-                    amenazas_totales = total_registros - trafico_normal
-                    tasa_criticidad = (amenazas_totales / total_registros) * 100
-
-                    st.subheader("📊 Métricas de Control de Daños del Lote:")
-                    col_m1, col_m2, col_m3 = st.columns(3)
-                    col_m1.metric("Total Conexiones Auditadas", f"{total_registros} flujos")
-                    col_m2.metric(
-                        "Amenazas Detectadas",
-                        f"{amenazas_totales} anomalías",
-                        delta=f"{tasa_criticidad:.2f}% Tasa",
-                        delta_color="inverse",
-                    )
-                    col_m3.metric(
-                        "Nivel de Alerta General",
-                        "CRÍTICO" if tasa_criticidad > 10
-                        else "MODERADO" if tasa_criticidad > 2
-                        else "SEGURO",
-                    )
-
-                    col_g1, col_g2 = st.columns(2)
-                    with col_g1:
-                        st.subheader("📈 Tabla Estadística Resumida:")
-                        st.dataframe(conteo_amenazas, use_container_width=True)
-                    with col_g2:
-                        st.subheader("📊 Gráfico de Distribución del Tráfico:")
-                        st.bar_chart(conteo_amenazas)
-
-                    csv_data = df_original.to_csv(index=False).encode("utf-8")
-                    st.download_button(
-                        label="📥 Exportar Reporte Estadístico de Ciberinteligencia (.CSV)",
-                        data=csv_data,
-                        file_name="reporte_analitico_eie.csv",
-                        mime="text/csv",
-                        use_container_width=True,
-                    )
+                        csv_data = df_original.to_csv(index=False).encode("utf-8")
+                        st.download_button(
+                            label="📥 Exportar Reporte Estadístico de Ciberinteligencia (.CSV)",
+                            data=csv_data,
+                            file_name="reporte_analitico_eie.csv",
+                            mime="text/csv",
+                            use_container_width=True,
+                        )
             except Exception as e:
                 st.error(f"Error crítico durante el análisis estadístico: {e}")
 
