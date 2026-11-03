@@ -203,3 +203,4 @@ with tab2:
                             mime="text/csv"
                         )
         except Exception as e:
+            st.error(f"Ocurrió un error al procesar el archivo por lotes: {e}")
