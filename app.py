@@ -38,7 +38,6 @@ st.set_page_config(
 st.markdown("""
 <style>
 .stApp, [data-testid="stHeader"] {background:#f3f6f4; color:#172a21;}
-.stApp {background:#f3f6f4 url("https://eie.edu.pe/wp-content/themes/eie/template/html/images/banner-nosotros.webp") center / cover no-repeat fixed;}
 .stApp h1, .stApp h2, .stApp h3, .stApp label, .stApp p {color:#172a21;}
 [data-testid="stSidebar"] {background:#172a21;}
 [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
@@ -61,7 +60,7 @@ st.markdown("""
 .stButton button p, .stDownloadButton button p {color:#fff;}
 .stButton button:hover, .stDownloadButton button:hover {background:#184b34; color:#fff;}
 .cyber-heading {
-    background:linear-gradient(115deg,#274637,#172a21);
+    background:linear-gradient(115deg,rgba(39,70,55,.78),rgba(23,42,33,.72)), url("https://eie.edu.pe/wp-content/themes/eie/template/html/images/banner-nosotros.webp") center / cover no-repeat #172a21;
     border-radius:16px; padding:clamp(20px,4vw,42px); margin-bottom:16px;
 }
 .cyber-heading h1 {color:#fff; margin:4px 0;}
