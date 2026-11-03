@@ -194,7 +194,7 @@ def main_streamlit_app():
     # --- PESTAÑA 1: SISTEMA MANUAL ---
     with tab1:
         st.subheader("Configurar flujo de red")
-        st.caption("Completa los datos del flujo y selecciona Clasificar flujo para ver el resultado.")
+        st.caption("Completa los datos del flujo y selecciona Detectar intrusiones para ver el resultado.")
         
         with st.expander("01 · Direccionamiento y protocolo", expanded=True):
             col1, col2 = st.columns(2)
@@ -232,7 +232,7 @@ def main_streamlit_app():
                 http_status_code = st.number_input("Código de Respuesta HTTP", min_value=0, value=0)
                 weird_name = st.text_input("weird_name Campo Log", "-")
 
-        if st.button("Clasificar flujo", use_container_width=True):
+        if st.button("Detectar intrusiones", use_container_width=True):
             input_data = pd.DataFrame([{
             'src_ip': src_ip, 'src_port': src_port, 'dst_ip': dst_ip, 'dst_port': dst_port,
             'proto': proto, 'service': service, 'duration': duration, 'src_bytes': src_bytes,
