@@ -31,7 +31,7 @@ except FileNotFoundError:
     st.stop()
 
 # Título Principal
-st.title("🛡️ Sistema de Detección y Clasificación de Ciberataques")
+st.title("🛡️ Sistema de Detección y Classification de Ciberataques")
 st.write("Herramienta basada en Inteligencia Artificial (XGBoost) para auditar el tráfico de red y detectar amenazas.")
 
 # Creación de pestañas solicitadas
@@ -46,7 +46,7 @@ req_cols = [
 ]
 
 # ----------------------------------------------------
-# PESTAÑA 1: SISTEMA MANUAL (DINÁMICO)
+# PESTAÑA 1: SISTEMA MANUAL (CORREGIDO)
 # ----------------------------------------------------
 with tab1:
     st.header("Análisis de Tráfico en Tiempo Real")
@@ -91,7 +91,7 @@ with tab1:
             'http_uri': http_uri, 'http_status_code': http_status_code, 'weird_name': weird_name
         }])
 
-        # Replicar codificación del Notebook de forma estricta
+        # Replicar codificación del Notebook
         proto_map = {'tcp': 0, 'udp': 1, 'icmp': 2}
         input_data['proto'] = input_data['proto'].map(proto_map).fillna(0)
 
@@ -104,12 +104,10 @@ with tab1:
         conn_map = {'S0': 0, 'SF': 1, 'REJ': 2, 'OTH': 3, 'S1': 4, 'S2': 5, 'S3': 6, 'RSTR': 7, 'RSTO': 8, 'RSTOS0': 9}
         input_data['conn_state'] = input_data['conn_state'].map(conn_map).fillna(0)
 
-        # ---- NUEVA CODIFICACIÓN DINÁMICA BASADA EN CONTENIDO PARA ENTRADA MANUAL ----
-        # Transforma el texto ingresado en variaciones numéricas para activar las ramas del XGBoost
+        # Codificación basada en contenido
         def pseudotarget_encode(text):
             if text == "-":
                 return 3.46
-            # Genera una dispersión numérica basada en la composición del string
             return 3.46 + (sum(ord(char) for char in str(text)) % 100) / 100.0
 
         def ip_to_numeric(ip):
@@ -131,16 +129,16 @@ with tab1:
         # Formato final numérico ordenado
         input_data = input_data[req_cols].astype(float)
 
-        # Predicciones
-        prediction = xgb_model.predict(input_data)
-        proba = xgb_model.predict_proba(input_data)
+        # Predicciones Extrayendo el índice escalar [0] para evitar el TypeError
+        prediction = xgb_model.predict(input_data)[0]
+        proba = xgb_model.predict_proba(input_data)[0]
         result_label = class_mapping_inv[int(prediction)]
 
         st.subheader("🛡️ Diagnóstico de la IA:")
         if result_label == "Normal":
-            st.success(f"✅ Tráfico Seguro. Clasificación: {result_label} (Confianza: {proba[0][int(prediction)]*100:.2f}%)")
+            st.success(f"✅ Tráfico Seguro. Clasificación: {result_label} (Confianza: {proba[int(prediction)]*100:.2f}%)")
         else:
-            st.error(f"🔥 ¡AMENAZA DETECTADA! Tipo de ataque: {result_label} (Confianza: {proba[0][int(prediction)]*100:.2f}%)")
+            st.error(f"🔥 ¡AMENAZA DETECTADA! Tipo de ataque: {result_label} (Confianza: {proba[int(prediction)]*100:.2f}%)")
 
 # ----------------------------------------------------
 # PESTAÑA 2: SISTEMA MASIVO
