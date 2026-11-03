@@ -29,7 +29,7 @@ req_cols = [
 # 🎨 INYECCIÓN DE ESTILOS CSS AVANZADOS Y CONTROL DE BRILLO
 # ==============================================================================
 st.set_page_config(
-    page_title="Consola de Ciberinteligencia",
+    page_title="CyberEP",
     page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -180,7 +180,7 @@ def main_streamlit_app():
     st.markdown(
         """
         <section class="cyber-heading">
-            <small>CONTROL MILITAR AI · CIBERDEFENSA</small>
+            <small>CIBERDEFENSA</small>
             <h1>Consola de ciberinteligencia</h1>
             <p>Clasificación de flujos de red y análisis de posibles intrusiones.</p>
             <div class="chips"><span>XGBoost</span><span>21 variables</span><span>10 clases</span></div>
