@@ -168,7 +168,7 @@ def main_streamlit_app():
     with st.sidebar:
         # Escudo oficial de la Escuela de Inteligencia del Ejército solicitado
         st.image("https://aulavirtual.eie.edu.pe/pluginfile.php/1/core_admin/logo/0x200/1790129921/logoeie%20%281%29.png", use_container_width=True)
-        st.markdown("<h2 style='text-align: center; margin-top: 10px;'>Control Militar AI</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; margin-top: 10px;'>CiberEP-AI</h2>", unsafe_allow_html=True)
         st.markdown("<hr style='border-color: #4d682e;'>", unsafe_allow_html=True)
         st.subheader("Panel del modelo")
         st.metric(label="Precisión de detección", value="99.54%")
