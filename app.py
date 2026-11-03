@@ -38,6 +38,7 @@ st.set_page_config(
 st.markdown("""
 <style>
 .stApp, [data-testid="stHeader"] {background:#f3f6f4; color:#172a21;}
+.stApp {background:#f3f6f4 url("https://eie.edu.pe/wp-content/themes/eie/template/html/images/banner-nosotros.webp") center / cover no-repeat fixed;}
 .stApp h1, .stApp h2, .stApp h3, .stApp label, .stApp p {color:#172a21;}
 [data-testid="stSidebar"] {background:#172a21;}
 [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
