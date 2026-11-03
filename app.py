@@ -260,6 +260,10 @@ def main_streamlit_app():
             prediction = xgb_model.predict(input_data_scaled)
             proba = xgb_model.predict_proba(input_data_scaled)[0]
 
+            st.session_state["cyberep_deteccion"] = input_data_scaled, prediction, proba
+
+        if "cyberep_deteccion" in st.session_state:
+            input_data_scaled, prediction, proba = st.session_state["cyberep_deteccion"]
             pred_idx = int(np.asarray(prediction).ravel()[0])
             result_label = class_mapping_es[pred_idx]
 
@@ -277,6 +281,56 @@ def main_streamlit_app():
                 "Puntaje": proba,
             }).sort_values("Puntaje", ascending=False)
             mostrar_distribucion(prob_df, "Puntaje", porcentaje=True)
+
+            with st.expander("Cómo decide XGBoost · Rondas de boosting"):
+                st.caption(
+                    "El panel usa el último flujo analizado. Si editas los campos, "
+                    "pulsa Detectar intrusiones para actualizarlo."
+                )
+                total = xgb_model.get_booster().num_boosted_rounds()
+                if total > 1:
+                    ronda = st.slider("Rondas acumuladas", 1, total, total)
+                else:
+                    ronda = 1
+
+                clases = list(xgb_model.classes_)
+                principales = np.argsort(proba)[::-1][:3]
+                puntos = sorted({1, ronda, total, *range(5, total, max(5, total // 20))})
+                trayectoria = []
+                puntaje_actual = None
+                for n in puntos:
+                    puntajes = xgb_model.predict_proba(
+                        input_data_scaled, iteration_range=(0, n)
+                    )[0]
+                    if n == ronda:
+                        puntaje_actual = puntajes
+                    for i in principales:
+                        trayectoria.append({
+                            "Ronda": n,
+                            "Clase": class_mapping_es[int(clases[i])],
+                            "Puntaje": float(puntajes[i]),
+                        })
+
+                lider = int(np.argmax(puntaje_actual))
+                st.metric("Clase líder en la ronda seleccionada", class_mapping_es[int(clases[lider])])
+                st.caption(f"Puntaje de la clase líder: {puntaje_actual[lider]:.2%}.")
+                grafico = alt.Chart(pd.DataFrame(trayectoria)).mark_line(point=True).encode(
+                    x=alt.X("Ronda:Q", axis=alt.Axis(tickMinStep=1)),
+                    y=alt.Y("Puntaje:Q", axis=alt.Axis(format=".0%"), scale=alt.Scale(domain=[0, 1])),
+                    color="Clase:N",
+                    tooltip=["Ronda:Q", "Clase:N", alt.Tooltip("Puntaje:Q", format=".2%")],
+                )
+                marcador = alt.Chart(pd.DataFrame({"Ronda": [ronda]})).mark_rule(
+                    color="#52637b", strokeDash=[5, 4]
+                ).encode(x="Ronda:Q")
+                st.altair_chart(grafico + marcador, use_container_width=True)
+                st.caption("El gráfico muestra las tres clases con mayor puntaje al completar la detección.")
+                if ronda == total:
+                    if np.allclose(puntaje_actual, proba) and int(clases[lider]) == pred_idx:
+                        st.success("Con todas las rondas, la clase y los puntajes coinciden con la detección.")
+                    else:
+                        st.warning("El resultado con todas las rondas difiere de la detección habitual.")
+
 
     # --- PESTAÑA 2: SISTEMA MASIVO ---
     with tab2:
