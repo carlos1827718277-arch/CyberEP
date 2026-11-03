@@ -181,7 +181,7 @@ def main_streamlit_app():
         """
         <section class="cyber-heading">
             <small>CIBERDEFENSA</small>
-            <h1>Consola de ciberinteligencia</h1>
+            <h1>CyberEP: Herramienta de detección de intrusiones de red utilizando XGBoost para el BIE</h1>
             <p>Clasificación de flujos de red y análisis de posibles intrusiones.</p>
             <div class="chips"><span>XGBoost</span><span>21 variables</span><span>10 clases</span></div>
         </section>
