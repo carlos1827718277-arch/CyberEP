@@ -1,5 +1,6 @@
 import os
 import pickle as pk
+import altair as alt
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -36,95 +37,39 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-.stApp {
-    background: radial-gradient(ellipse at 85% 0%, #283825 0%, #101713 55%);
-    color: #edf3ed;
+.stApp, [data-testid="stHeader"] {background:#f3f6f4; color:#172a21;}
+.stApp h1, .stApp h2, .stApp h3, .stApp label, .stApp p {color:#172a21;}
+[data-testid="stSidebar"] {background:#172a21;}
+[data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] p, [data-testid="stSidebar"] [data-testid="stMetricValue"] {color:#eff6f0;}
+[data-testid="stSidebar"] img {max-width:104px; margin-inline:auto;}
+[data-testid="stMainBlockContainer"] {max-width:1320px; padding-top:3.5rem;}
+[data-testid="stMetric"], [data-testid="stExpander"] details {
+    background:#fff; color:#172a21; border:1px solid #ccd8cf;
+    border-radius:12px; padding:12px;
 }
-[data-testid="stHeader"] {background: #101713;}
-[data-testid="stSidebar"] {background: #18241c;}
-.stApp h1, .stApp h2, .stApp h3,
-.stApp label, [data-testid="stCaptionContainer"] p {
-    color: #eaf1e9;
-}
-[data-testid="stSidebar"] img {max-width: 104px; margin-inline: auto;}
-[data-testid="stMetric"] {
-    background: #202d24;
-    border: 1px solid #425646;
-    border-radius: 12px;
-    padding: 16px;
-    color: #edf3ed;
-}
-[data-testid="stMetricValue"] {color: #d8ebba;}
-[data-testid="stMetricDelta"] svg {display: none;}
-.stButton button, .stDownloadButton button {
-    background: #c4dfa1;
-    color: #162216;
-    border: 1px solid #c4dfa1;
-    border-radius: 8px;
-    font-weight: 650;
-}
-.stButton button:hover, .stDownloadButton button:hover {
-    background: #dceebd;
-    color: #162216;
-    border-color: #dceebd;
-}
-.stButton button:focus-visible, .stDownloadButton button:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: 3px;
-}
-[data-baseweb="tab-list"] {
-    gap: 8px;
-    border-bottom: 1px solid #425646;
-}
-[data-baseweb="tab"] {color: #d0ded0;}
-[data-baseweb="tab"][aria-selected="true"] {color: #d8ebba;}
-[data-testid="stExpander"] details {
-    background: #19251d;
-    border: 1px solid #425646;
-    border-radius: 10px;
-}
-[data-testid="stExpander"] summary {color: #eaf1e9;}
+[data-testid="stSidebar"] [data-testid="stMetric"] {background:#233c30; border-color:#4a6354;}
+[data-testid="stMetricValue"] {color:#18382a;}
+[data-testid="stExpander"] summary, [data-baseweb="tab"] {color:#172a21;}
+[data-baseweb="tab"][aria-selected="true"] {background:#deebe2; color:#164c34;}
+[data-testid="stFileUploaderDropzone"] {background:#e8efe8; border:1px dashed #718d77; border-radius:12px;}
+[data-testid="stFileUploaderDropzone"] span,
+[data-testid="stFileUploaderDropzone"] small {color:#23372b;}
+[data-testid="stDataFrame"] {border:1px solid #ccd8cf; border-radius:10px; overflow:hidden;}
+.stButton button, .stDownloadButton button {background:#236044; color:#fff; border-radius:8px;}
+.stButton button p, .stDownloadButton button p {color:#fff;}
+.stButton button:hover, .stDownloadButton button:hover {background:#184b34; color:#fff;}
 .cyber-heading {
-    background: #1a281e;
-    border: 1px solid #425646;
-    border-left: 4px solid #b7d391;
-    border-radius: 12px;
-    padding: 20px 24px;
-    margin-bottom: 14px;
+    background:linear-gradient(115deg,#274637,#172a21);
+    border-radius:16px; padding:clamp(20px,4vw,42px); margin-bottom:16px;
 }
-.cyber-heading small {
-    color: #b7d391;
-    font-weight: 700;
-    letter-spacing: .12em;
-}
-.cyber-heading h1 {margin: 4px 0 0; padding: 0; font-size: clamp(1.65rem, 4vw, 2.4rem);}
-
-[data-testid="stMainBlockContainer"] {max-width: 1320px; padding-top: 3.5rem;}
-.stApp {background: #101815;}
-.cyber-heading {
-    background: linear-gradient(115deg,#263b30,#17251e 65%);
-    border: 1px solid #41584a;
-    padding: clamp(20px,4vw,46px);
-    border-radius: 18px;
-}
-.cyber-heading p {color:#bdcfc3; margin:12px 0 0;}
-.cyber-heading .chips {display:flex; gap:8px; flex-wrap:wrap; margin-top:20px;}
+.cyber-heading h1 {color:#fff; margin:4px 0;}
+.cyber-heading p, .cyber-heading small {color:#d5eadb;}
+.cyber-heading .chips {display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;}
 .cyber-heading .chips span {
-    background:#17261e; border:1px solid #506657; color:#d8e8d9;
-    padding:4px 10px; border-radius:999px; font-size:.8rem;
+    background:#e6f0e8; color:#17372a; padding:4px 10px;
+    border-radius:999px; font-size:.8rem;
 }
-[data-baseweb="tab-list"] {gap:.6rem; margin-bottom:1rem;}
-[data-baseweb="tab"] {padding:.5rem .85rem; border-radius:8px 8px 0 0;}
-[data-baseweb="tab"][aria-selected="true"] {background:#26382d;}
-[data-testid="stMetric"] {background:#1b2a22; border-top:2px solid #79966e;}
-[data-testid="stFileUploaderDropzone"] {
-    background:#e8efe8; border:1px dashed #718d77; border-radius:12px;
-}
-[data-testid="stFileUploaderDropzone"] small,
-[data-testid="stFileUploaderDropzone"] span {color:#23372b;}
-[data-testid="stDataFrame"] {border:1px solid #40554a; border-radius:10px; overflow:hidden;}
-[data-testid="stExpander"] summary {padding:12px 16px;}
-[data-testid="stAlert"] {border-radius:10px;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -169,6 +114,39 @@ def main_training():
 # ==============================================================================
 # 💻 BLOQUE 2: INTERFAZ WEB - DASHBOARD EMPRESARIAL (STREAMLIT CLOUD)
 # ==============================================================================
+def mostrar_distribucion(tabla, medida, porcentaje=False):
+    """Presenta una tabla y un gráfico horizontal para las mismas clases."""
+    clases = list(class_mapping_es.values())
+    colores = [
+        "#217a51", "#a83b46", "#375ba7", "#b76022", "#774bb0",
+        "#8b5c36", "#a03d80", "#167c87", "#7b6c14", "#52637b",
+    ]
+    grafico = alt.Chart(tabla).mark_bar(cornerRadiusEnd=4).encode(
+        y=alt.Y("Clase:N", sort="-x", title=None),
+        x=alt.X(f"{medida}:Q", title=medida,
+                axis=alt.Axis(**({"format": ".0%"} if porcentaje else {"format": "d", "tickMinStep": 1}))),
+        color=alt.Color("Clase:N", scale=alt.Scale(domain=clases, range=colores), legend=None),
+        tooltip=["Clase:N", alt.Tooltip(f"{medida}:Q", format=".2%" if porcentaje else "d")],
+    ).properties(height=max(150, len(tabla) * 29)).configure(
+        background="#ffffff"
+    ).configure_axis(
+        labelColor="#172a21", titleColor="#172a21", gridColor="#e1e9e3",
+        labelLimit=310,
+    )
+    st.altair_chart(grafico, use_container_width=True)
+    st.dataframe(
+        tabla,
+        hide_index=True,
+        use_container_width=True,
+        column_config={
+            "Clase": st.column_config.TextColumn("Clase de tráfico", width="large"),
+            medida: st.column_config.ProgressColumn(
+                medida, min_value=0.0, max_value=1.0, format="percent"
+            ) if porcentaje else st.column_config.NumberColumn(medida, format="%d"),
+        },
+    )
+
+
 def main_streamlit_app():
     @st.cache_resource
     def load_artifacts():
@@ -295,10 +273,10 @@ def main_streamlit_app():
 
             st.subheader("Puntajes por clase")
             prob_df = pd.DataFrame({
-            'Clase de Tráfico / Amenaza': [class_mapping_es[i] for i in range(10)],
-            'Probabilidad Calculada': [f"{p * 100:.4f}%" for p in proba]
-            })
-            st.dataframe(prob_df, use_container_width=True)
+                "Clase": [class_mapping_es[i] for i in range(10)],
+                "Puntaje": proba,
+            }).sort_values("Puntaje", ascending=False)
+            mostrar_distribucion(prob_df, "Puntaje", porcentaje=True)
 
     # --- PESTAÑA 2: SISTEMA MASIVO ---
     with tab2:
@@ -310,7 +288,7 @@ def main_streamlit_app():
             try:
                 df_original = pd.read_csv(uploaded_file)
                 st.success("Archivo cargado · Vista previa")
-                st.dataframe(df_original.head(5), use_container_width=True)
+                st.dataframe(df_original.head(5), use_container_width=True, hide_index=True)
 
                 missing_cols = [c for c in req_cols if c not in df_original.columns]
                 if missing_cols:
@@ -351,13 +329,9 @@ def main_streamlit_app():
                             col_m2.metric("Posibles intrusiones", f"{amenazas_totales} anomalías", delta=f"{tasa_criticidad:.2f}% Tasa", delta_color="inverse")
                             col_m3.metric("Nivel de alerta", "CRÍTICO" if tasa_criticidad > 10 else "MODERADO" if tasa_criticidad > 2 else "SEGURO")
 
-                            col_g1, col_g2 = st.columns(2)
-                            with col_g1:
-                                st.subheader("Flujos por clase")
-                                st.dataframe(conteo_amenazas, use_container_width=True)
-                            with col_g2:
-                                st.subheader("Distribución de clases")
-                                st.bar_chart(conteo_amenazas)
+                            st.subheader("Distribución de clases")
+                            distribucion = conteo_amenazas.rename_axis("Clase").reset_index(name="Flujos")
+                            mostrar_distribucion(distribucion, "Flujos")
 
                             csv_data = df_original.to_csv(index=False).encode('utf-8')
                             st.download_button(
