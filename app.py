@@ -182,7 +182,7 @@ def main_streamlit_app():
         <section class="cyber-heading">
             <small>CIBERDEFENSA</small>
             <h1>CyberEP: Herramienta de detección de intrusiones de red utilizando XGBoost para el BIE</h1>
-            <p>Clasificación de flujos de red y análisis de posibles intrusiones.</p>
+            <p>Analiza un flujo de red de forma individual o varios mediante un archivo CSV.</p>
             <div class="chips"><span>XGBoost</span><span>21 variables</span><span>10 clases</span></div>
         </section>
         """,
